@@ -1,0 +1,42 @@
+name: Build win11toast wheels (Windows)
+
+on:
+  workflow_dispatch: {}   # 手動実行
+  push:
+    paths:
+      - ".github/workflows/build-win11toast.yml"
+
+jobs:
+  build:
+    runs-on: windows-latest  # Windows ランナー（分数は2倍計上）
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.13']   # ←ローカルに合わせて増減してOK
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: 'x64'
+
+      # ユーザーが uv 派なので uv でビルド
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Build wheels (winsdk + win11toast)
+        run: |
+          uv pip wheel --wheel-dir dist ^
+            winsdk==1.0.0b10 win11toast
+
+      - name: List wheels
+        run: dir dist
+
+      - name: Upload wheels as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-py${{ matrix.python-version }}-win_amd64
+          path: dist/*.whl
+          retention-days: 7
