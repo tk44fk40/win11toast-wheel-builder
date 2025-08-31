@@ -1,0 +1,17 @@
+[project]
+name = "win11toast"
+version = "0.1.0"
+description = "Build whells of `winsdk` and `win11toast`"
+readme = "README.md"
+authors = [
+    { name = "Takayoshi Fukushima", email = "tk44fk40@gmail.com" }
+]
+requires-python = ">=3.13"
+dependencies = []
+
+[project.scripts]
+win11toast = "win11toast:main"
+
+[build-system]
+requires = ["uv_build>=0.8.13,<0.9.0"]
+build-backend = "uv_build"
