@@ -22,15 +22,11 @@ jobs:
           python-version: ${{ matrix.python-version }}
           architecture: 'x64'
 
-      # ユーザーが uv 派なので uv でビルド
-      - name: Install uv
-        uses: astral-sh/setup-uv@v3
-
-      - name: Build wheels winsdk
-        run: uv build -o dist --wheel --package winsdk
-
-      - name: Build wheels win11toast
-        run: uv build -o dist --wheel --package win11toast
+      - name: Update pip
+        run: python -m pip install --upgrade pip
+          
+      - name: Build wheels winsdk + win11toast
+        run: python -m pip wheel --wheel-dir dist winsdk==1.0.0b10 win11toast
 
       - name: List wheels
         run: dir dist
